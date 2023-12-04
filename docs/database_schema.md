@@ -7,29 +7,34 @@
     id: objectId(user_id), 
     username: {
         type: String
-        required
+        required: true,
+        unique: true
     },
     name: {
         type: String,
-        required
+        required: true
     }
     email: {
         type: String
-        required
+        required: true,
+        unique: true
     },
     password: {
         type: String
     },
     isVerified: {
-        type: boolean,
+        type: Boolean,
         default: false,
     },
     isAdmin: {
-        type: boolean,
+        type: Boolean,
         default: false,
     },
-    createdAt: timestamp,
-    updatedAt: timestamp
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+    updatedAt: Date
 } 
 ```
 
@@ -37,7 +42,10 @@
 
 ```bson
 {
-    id: objectId(article_id),
+    user_id: {
+      type: String,
+      default: () => mongoose.Types.ObjectId().toString(),
+    },
     title: {
         type: String,
         required
