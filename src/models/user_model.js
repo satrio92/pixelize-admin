@@ -1,10 +1,6 @@
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
-  user_id: {
-    type: String,
-    default: () => mongoose.Types.ObjectId().toString()
-  },
   username: {
     type: String,
     required: true,
@@ -35,7 +31,8 @@ const UserSchema = new mongoose.Schema({
     default: Date.now()
   },
   updatedAt: {
-    type: Date
+    type: Date,
+    default: Date.now()
   }
 })
 
