@@ -1,4 +1,4 @@
-import {errorResponse} from "../../error/error_response.js";
+import {errorResponse} from "../error/error_response.js";
 
 const validation = (schema, request) => {
   const result = schema.validate(request);

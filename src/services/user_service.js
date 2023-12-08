@@ -3,7 +3,7 @@ import {registerUserValidation} from "../validation/user_validation.js";
 import User from "../models/user_model.js";
 import {json} from "express";
 import bcrypt from "bcrypt";
-import {errorResponse} from "../../error/error_response.js";
+import {errorResponse} from "../error/error_response.js";
 
 const register = async (request) => {
   const user = validation(registerUserValidation, request)

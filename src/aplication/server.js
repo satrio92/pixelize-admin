@@ -1,8 +1,10 @@
 import express from 'express';
+import {publicRoute} from "../routes/public_api.js";
+import {errorMiddleware} from "../middleware/error_middleware.js";
 
 export const server = express();
 
-server.get('/', (req, res) => {
-  res.send("Hello world");
-})
+server.use(express.json());
+server.use(publicRoute);
+server.use(errorMiddleware)
 
