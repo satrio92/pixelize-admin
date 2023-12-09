@@ -43,9 +43,7 @@ const login = async (request) => {
 
   if (existingUser) {
     const isPasswordValid = await bcrypt.compare(user.password, existingUser.password)
-    console.info(isPasswordValid)
     if (isPasswordValid) {
-      console.info("password is valid")
       const expiresInSeconds = 60 * 60 * 1;
       const token = await jwt.sign({
           username: existingUser.username,
@@ -54,7 +52,6 @@ const login = async (request) => {
         }, process.env.SECRET_KEY
         , { expiresIn: expiresInSeconds}
       )
-      console.info(token)
       return { token: token }
     } else {
       throw errorResponse(400, "user not found")
