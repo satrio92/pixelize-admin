@@ -53,10 +53,10 @@ const login = async (request) => {
         , { expiresIn: expiresInSeconds}
       )
       return { token: token }
-    } else {
-      throw errorResponse(400, "user not found")
     }
   }
+
+  throw errorResponse(400, "user not found")
 }
 
 export default { register, login }
