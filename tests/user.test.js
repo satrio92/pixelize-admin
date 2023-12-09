@@ -22,6 +22,7 @@ const mockUser = {
 }
 
 describe('POST /api/users', () => {
+
   beforeEach(async () => {
     await supertest(server)
       .post('/api/users')
@@ -244,6 +245,7 @@ describe('POST /api/users', () => {
 })
 
 describe('POST /api/login', () => {
+
   beforeEach(async () => {
     await supertest(server)
       .post('/api/users')
@@ -257,7 +259,7 @@ describe('POST /api/login', () => {
         email: "alex.john.doe@example.com",
         password: "Password123"
       })
-
+    console.info(result.body.data.token)
     expect(result.status).toBe(200)
     expect(result.body.data.token).toBeDefined()
   });
@@ -307,6 +309,54 @@ describe('POST /api/login', () => {
       })
 
     expect(result.status).toBe(400)
+    expect(result.body.error).toBeDefined()
+  });
+});
+
+describe('GET /api/me', () => {
+
+  beforeEach(async () => {
+    await supertest(server)
+      .post('/api/users')
+      .send(mockUser);
+  });
+
+  it('should get a current user data', async () => {
+    const user = await supertest(server)
+      .post('/api/login')
+      .send({
+        email: "alex.john.doe@example.com",
+        password: "Password123"
+      });
+
+    const result = await supertest(server)
+      .get('/api/me')
+      .set('Authorization', `Bearer ${user.body.data.token}`);
+
+    expect(result.status).toBe(200)
+    expect(result.body.data).toEqual({
+      username: 'johndoe99',
+      name: 'Alexander John Doe',
+      email: 'alex.john.doe@example.com'
+    });
+  });
+
+  it('should not get a current user data because not have token', async () => {
+
+    const result = await supertest(server)
+      .get('/api/me')
+
+    expect(result.status).toBe(401)
+    expect(result.body.error).toBeDefined()
+  });
+
+  it('should not get a current user data because the token is invalid or expired', async () => {
+
+    const result = await supertest(server)
+      .get('/api/me')
+      .set('Authorization', `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2MybmFtZSI6Imt1a3Voc2F0IiwibmFtZSI6Imt1a3VoIHNhdHJpbyIsImVtYWlsIjoia3VrdWhAZ21haWwuY29tIiwiaWF0IjoxNzAyMTEyMzc4LCJleHAiOjE3MDIxMTU5Nzh9.MbaLJk4KNjuLDxBWbavACq-7Iq7Az-mJIipz54_4jLA`);
+
+    expect(result.status).toBe(401)
     expect(result.body.error).toBeDefined()
   });
 });
