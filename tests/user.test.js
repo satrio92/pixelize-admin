@@ -242,3 +242,71 @@ describe('POST /api/users', () => {
     expect(result.body.error).toBeDefined()
   })
 })
+
+describe('POST /api/login', () => {
+  beforeEach(async () => {
+    await supertest(server)
+      .post('/api/users')
+      .send(mockUser);
+  });
+
+  it('should login successfully', async () => {
+    const result = await supertest(server)
+      .post('/api/login')
+      .send({
+        email: "alex.john.doe@example.com",
+        password: "Password123"
+      })
+
+    expect(result.status).toBe(200)
+    expect(result.body.data.token).toBeDefined()
+  });
+
+  it('should login fail with an empty email', async () => {
+    const result = await supertest(server)
+      .post('/api/login')
+      .send({
+        email: "",
+        password: "Password123"
+      })
+
+    expect(result.status).toBe(400)
+    expect(result.body.error).toBeDefined()
+  });
+
+  it('should login fail with an empty password', async () => {
+    const result = await supertest(server)
+      .post('/api/login')
+      .send({
+        email: "alex.john.doe@example.com",
+        password: ""
+      })
+
+    expect(result.status).toBe(400)
+    expect(result.body.error).toBeDefined()
+  });
+
+  it('should login fail with wrong email', async () => {
+    const result = await supertest(server)
+      .post('/api/login')
+      .send({
+        email: "alex.john@example.com",
+        password: "Password123"
+      })
+
+    expect(result.status).toBe(400)
+    expect(result.body.error).toBeDefined()
+  });
+
+  it('should login fail with wrong password', async () => {
+    const result = await supertest(server)
+      .post('/api/login')
+      .send({
+        email: "alex.john.doe@example.com",
+        password: "Passwordd123"
+      })
+
+    expect(result.status).toBe(400)
+    expect(result.body.error).toBeDefined()
+  });
+});
