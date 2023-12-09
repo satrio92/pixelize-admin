@@ -11,4 +11,9 @@ const registerUserValidation = Joi.object({
   updatedAt: Joi.date()
 })
 
-export { registerUserValidation }
+const loginUserValidation = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required().min(8).max(20).regex(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d){8,20}/)
+})
+
+export { registerUserValidation, loginUserValidation }

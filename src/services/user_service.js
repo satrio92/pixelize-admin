@@ -1,9 +1,11 @@
 import {validation} from "../validation/validation.js";
-import {registerUserValidation} from "../validation/user_validation.js";
+import {registerUserValidation, loginUserValidation} from "../validation/user_validation.js";
 import User from "../models/user_model.js";
-import {json} from "express";
 import bcrypt from "bcrypt";
 import {errorResponse} from "../error/error_response.js";
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const register = async (request) => {
   const user = validation(registerUserValidation, request)
@@ -34,4 +36,30 @@ const register = async (request) => {
   };
 }
 
-export default { register }
+const login = async (request) => {
+  const user = validation(loginUserValidation, request)
+
+  const existingUser = await User.findOne({email: user.email})
+
+  if (existingUser) {
+    const isPasswordValid = await bcrypt.compare(user.password, existingUser.password)
+    console.info(isPasswordValid)
+    if (isPasswordValid) {
+      console.info("password is valid")
+      const expiresInSeconds = 60 * 60 * 1;
+      const token = await jwt.sign({
+          username: existingUser.username,
+          name: existingUser.name,
+          email: existingUser.email,
+        }, process.env.SECRET_KEY
+        , { expiresIn: expiresInSeconds}
+      )
+      console.info(token)
+      return { token: token }
+    } else {
+      throw errorResponse(400, "user not found")
+    }
+  }
+}
+
+export default { register, login }
