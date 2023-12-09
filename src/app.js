@@ -1,10 +1,6 @@
 import {server} from "./aplication/server.js";
-
-import mongoose from "mongoose";
-mongoose.connect('mongodb://127.0.0.1:27017/test')
-  .then(() => {
-    console.info('mongoose connect')
-  });
+import  { connection } from './config/mongoose_config.js'
+connection();
 
 const PORT = 3500;
 server.listen(PORT, () => {
