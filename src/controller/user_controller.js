@@ -17,4 +17,13 @@ const login = async (req, res, next) => {
     next(e)
   }
 }
-export default { register, login }
+
+const me = async (req, res, next) => {
+  try {
+    const result = await userService.me(req.user);
+    res.status(200).json({data: result})
+  } catch (e) {
+    next(e)
+  }
+}
+export default { register, login, me }

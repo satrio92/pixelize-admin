@@ -59,4 +59,12 @@ const login = async (request) => {
   throw errorResponse(400, "user not found")
 }
 
-export default { register, login }
+const me = async (request) => {
+  return {
+    username: request.username,
+    name: request.name,
+    email: request.email
+  }
+}
+
+export default { register, login, me }
