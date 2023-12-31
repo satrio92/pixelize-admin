@@ -67,19 +67,27 @@ const me = async (request) => {
 }
 
 const update = async (request) => {
+  request.body.email = request.user.email
   const user = validation(updateUserValidation, request.body)
-  user.password = await bcrypt.hash(user.password, 10)
-
-  const result = await User.findOneAndUpdate(
+  if(user.password) {
+    user.password = await bcrypt.hash(user.password, 10)
+  }
+  user.updatedAt = new Date()
+  const updatedUser = await User.findOneAndUpdate(
     {email: request.user.email},
     user,
+    { new: true }
   )
 
-  if (!result) {
+  if (!updatedUser) {
     throw errorResponse(400, "update user failed")
   }
 
-  return result
+  return {
+    name: updatedUser.name,
+    username: updatedUser.username,
+    email: updatedUser.email,
+  }
 }
 
 export default { register, login, me, update }
