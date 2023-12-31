@@ -46,8 +46,6 @@ const login = async (request) => {
     if (isPasswordValid) {
       const expiresInSeconds = 60 * 60 * 1;
       const token = await jwt.sign({
-          username: existingUser.username,
-          name: existingUser.name,
           email: existingUser.email,
         }, process.env.SECRET_KEY
         , { expiresIn: expiresInSeconds}
