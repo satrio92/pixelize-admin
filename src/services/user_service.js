@@ -1,5 +1,5 @@
 import {validation} from "../validation/validation.js";
-import {registerUserValidation, loginUserValidation} from "../validation/user_validation.js";
+import {registerUserValidation, loginUserValidation, updateUserValidation} from "../validation/user_validation.js";
 import User from "../models/user_model.js";
 import bcrypt from "bcrypt";
 import {errorResponse} from "../error/error_response.js";
@@ -67,4 +67,20 @@ const me = async (request) => {
   }
 }
 
-export default { register, login, me }
+const update = async (request) => {
+  const user = validation(updateUserValidation, request.body)
+  user.password = await bcrypt.hash(user.password, 10)
+
+  const result = await User.findOneAndUpdate(
+    {email: request.user.email},
+    user,
+  )
+
+  if (!result) {
+    throw errorResponse(400, "update user failed")
+  }
+
+  return result
+}
+
+export default { register, login, me, update }
