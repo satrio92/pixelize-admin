@@ -58,10 +58,11 @@ const login = async (request) => {
 }
 
 const me = async (request) => {
+  const existingUser = await User.findOne({email: request.email})
   return {
-    username: request.username,
-    name: request.name,
-    email: request.email
+    name: existingUser.name,
+    username: existingUser.username,
+    email: existingUser.email,
   }
 }
 
