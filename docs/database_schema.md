@@ -89,3 +89,14 @@
 }
 ```
 
+## Blacklisted Token Schema
+
+```bson
+{
+    id_: objectId(),
+    token: {
+        type: String,
+        unique: true
+    }
+}
+```
