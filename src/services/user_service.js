@@ -1,6 +1,7 @@
 import {validation} from "../validation/validation.js";
 import {registerUserValidation, loginUserValidation, updateUserValidation} from "../validation/user_validation.js";
 import User from "../models/user_model.js";
+import BlacklistedToken from "../models/blacklisted_token_model.js";
 import bcrypt from "bcrypt";
 import {errorResponse} from "../error/error_response.js";
 import jwt from 'jsonwebtoken';
@@ -90,4 +91,17 @@ const update = async (request) => {
   }
 }
 
-export default { register, login, me, update }
+const logout = async (req) => {
+  const blacklistedToken = {token: req.token}
+  const newToken = await new BlacklistedToken(blacklistedToken)
+  newToken
+    .save()
+    .then(() => {
+      console.info("add new token successfully")
+    })
+    .catch((err) => {
+      throw errorResponse(400, "logout failed")
+    })
+}
+
+export default { register, login, me, update, logout }

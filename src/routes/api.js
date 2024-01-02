@@ -7,5 +7,6 @@ const authRoute = new express.Router();
 authRoute.use(authMiddleware)
 authRoute.get('/api/me', userController.me)
 authRoute.patch('/api/user/update', userController.update)
+authRoute.post('/api/logout', userController.logout)
 
 export { authRoute }
